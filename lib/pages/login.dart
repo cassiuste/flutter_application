@@ -1,35 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application/pages/count.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+  
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _userController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Login Page", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.lightBlue,  
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              flutterImage(),
-              const SizedBox(height: 50),
-              userTextBox("Username"),
-              const SizedBox(height: 16),
-              passwordTextBox("Password"),
-              const SizedBox(height: 10),
-              forgotPasswordButton(),
-              const SizedBox(height: 10),
-              loginButton(context),
-            ],
+          child: Form(
+          key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                flutterImage(),
+                const SizedBox(height: 50),
+                userTextBox("Username"),
+                const SizedBox(height: 16),
+                passwordTextBox("Password"),
+                const SizedBox(height: 10),
+                forgotPasswordButton(),
+                const SizedBox(height: 10),
+                loginButton(context),
+              ],
+            ),
           ),
         ),
       ),
@@ -46,23 +56,73 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget userTextBox(String text) {
-    return TextField(
+    return TextFormField(
       controller: _userController,
       decoration: InputDecoration(
         labelText: text,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingresa tu usuario';
+        }
+        return null;
+      },
     );
   }
 
   Widget passwordTextBox(String text) {
-    return TextField(
+    return TextFormField(
       controller: _passwordController,
       obscureText: true,
       decoration: InputDecoration(
         labelText: text,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingresa tu contraseña';
+        }
+
+        if (value.length < 7) {
+          return 'La contraseña debe tener al menos 7 caracteres';
+        }
+
+        if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
+          return 'La contraseña debe contener al menos una letra';
+        }
+
+      if (!RegExp(r'[0-9]').hasMatch(value)) {
+        return 'La contraseña debe contener al menos un número';
+      }
+
+        return null;
+      },
+    );
+  }
+  
+  Widget loginButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+
+          if (_userController.text == "user" && _passwordController.text == "pass12345") {
+            Navigator.pushNamed(context, '/list', arguments: _userController.text);
+          } 
+          else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Usuario o contraseña incorrectos')),
+            );
+          }
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.lightBlue,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+        minimumSize: const Size(200, 50),
+      ),
+      child: const Text("Login", style: TextStyle(fontSize: 18)),
     );
   }
 
@@ -73,30 +133,6 @@ class LoginPage extends StatelessWidget {
         "Forgot password?",
         style: TextStyle(color: Colors.blue),
       ),
-    );
-  }
-
-  Widget loginButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        final userValue = _userController.text;
-        final passwordValue = _passwordController.text;
-        if (userValue == "Usuario" && passwordValue == "12345") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CountPage(username: _userController.text),
-            ),
-          );
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.lightBlue,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-        minimumSize: const Size(200, 50),
-      ),
-      child: const Text("Login", style: TextStyle(fontSize: 18)),
     );
   }
 
