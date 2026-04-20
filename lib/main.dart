@@ -17,21 +17,9 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter application',
-      initialRoute: '/login', 
-      routes: {
-        '/login': (context) => const LoginPage(),
-        '/count': (context) {
-          final usernameArg = ModalRoute.of(context)!.settings.arguments as String;
-          return CountPage(username: usernameArg); 
-        },
-        '/list': (context) {
-          final usernameArg = ModalRoute.of(context)!.settings.arguments as String;
-          return ListScreen(username: usernameArg);}
-          ,
-          '/detail': (context) {
-          final nameArg = ModalRoute.of(context)!.settings.arguments as City;
-          return DetailScreen(city: nameArg);}
-      },
+      initialRoute: '/', 
+      routes: appRoutes,
+      initialRoute: Routes.splash
     );
     }
   }
