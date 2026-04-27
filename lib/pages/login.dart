@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/routing/routes.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -107,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
         if (_formKey.currentState!.validate()) {
 
           if (_userController.text == "user" && _passwordController.text == "pass12345") {
-            Navigator.pushNamed(context, '/list', arguments: _userController.text);
+            Navigator.pushReplacementNamed(context, Routes.list, arguments: _userController.text);
           } 
           else {
             ScaffoldMessenger.of(context).showSnackBar(
